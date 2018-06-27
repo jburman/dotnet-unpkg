@@ -44,18 +44,25 @@ namespace RendleLabs.Unpkg
                 .Select((e, _) => e)
                 .ToArray();
 
-            foreach (var entry in entries)
+            if (entries.Any())
             {
-                foreach (var file in entry.Files)
+                foreach (var entry in entries)
                 {
-                    if (File.Exists(file.LocalPath))
+                    foreach (var file in entry.Files)
                     {
-                        File.Delete(file.LocalPath);
+                        if (File.Exists(file.LocalPath))
+                        {
+                            File.Delete(file.LocalPath);
+                        }
                     }
                 }
-            }
 
-            await Add.Run(entries.Select(e => e.PackageName));
+                await Add.Run(entries.Select(e => e.PackageName));
+            }
+            else
+            {
+                Console.WriteLine("All packages are up-to-date");
+            }
         }
 
         private static async Task<(UnpkgJsonEntry, DistFile)> GetDistFile(UnpkgJsonEntry entry)
